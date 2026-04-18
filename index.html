@@ -5,106 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Costam Wallz</title>
+    <title>Costam Wallz | Secure Access</title>
     <style>
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: #000; color: #fff; 
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
-            overflow: hidden;
-        }
-
-        /* LOADING SCREEN */
-        #loader {
-            position: fixed; width: 100%; height: 100%;
-            background: #000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 999;
-            transition: opacity 1s ease;
-        }
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #222; border-top: 4px solid #ff00cc;
-            border-radius: 50%; animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* MAIN APP LAYOUT */
-        #app-content {
-            display: none; padding: 20px; text-align: center;
-            height: 100vh; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .icon-box {
-            width: 110px; height: 110px; 
-            background: linear-gradient(135deg, #ff00cc, #3333ff);
-            border-radius: 24px; margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(255, 0, 204, 0.4);
-            display: flex; align-items: center; justify-content: center; font-size: 45px;
-        }
-        h1 { font-size: 28px; margin: 0; font-weight: 700; }
-        p { color: #888; font-size: 15px; margin: 10px 0 35px; }
-
-        .upload-btn {
-            background: #fff; color: #000; padding: 16px 45px;
-            border-radius: 35px; font-weight: bold; text-decoration: none;
-            display: inline-block; cursor: pointer; border: none; font-size: 17px;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: #fff; font-family: -apple-system, sans-serif; overflow: hidden; }
         
-        #status { margin-top: 25px; color: #ff00cc; font-size: 14px; min-height: 20px; }
-        .security-tag { margin-top: 40px; font-size: 10px; color: #333; letter-spacing: 1px; }
-        input[type="file"] { display: none; }
+        /* LOGIN SCREEN */
+        #login-screen {
+            position: fixed; width: 100%; height: 100%; background: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
+        }
+        input[type="password"] {
+            background: #111; border: 1px solid #333; color: #fff; padding: 15px;
+            border-radius: 12px; width: 200px; text-align: center; font-size: 18px; margin-bottom: 20px; outline: none;
+        }
+        .login-btn { background: #fff; color: #000; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; }
+
+        /* APP CONTENT (HIDDEN BY DEFAULT) */
+        #app-content { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        
+        .icon-box { width: 110px; height: 110px; background: linear-gradient(135deg, #ff00cc, #3333ff); border-radius: 26px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 10px 40px rgba(255, 0, 204, 0.4); }
+        .upload-btn { background: #fff; color: #000; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px; display: inline-block; }
+        #status { color: #ff00cc; margin-top: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner"></div>
-        <h2 style="margin-top: 20px; letter-spacing: 3px; font-size: 12px; color: #555;">ENCRYPTING CONNECTION...</h2>
+    <div id="login-screen">
+        <div style="font-size: 40px; margin-bottom: 20px;">🔒</div>
+        <h2 style="letter-spacing: 2px; font-size: 14px; color: #888;">ENTER ACCESS CODE</h2>
+        <input type="password" id="pass-code" placeholder="••••">
+        <div class="login-btn" onclick="checkAccess()">UNLOCK</div>
+        <p id="error" style="color: red; font-size: 12px; margin-top: 15px;"></p>
     </div>
 
     <div id="app-content">
         <div class="icon-box">✨</div>
-        <h1>Costam Wallz</h1>
-        <p>Verified App Connection</p>
+        <h1 id="user-greeting">Costam Wallz</h1>
+        <p>Verified Secure Connection</p>
 
-        <label for="file-upload" class="upload-btn">Sync New Wallpaper</label>
-        <input type="file" id="file-upload" accept="image/*,video/*" onchange="startSync(this)">
+        <label for="file-upload" class="upload-btn">Sync Wallpaper</label>
+        <input type="file" id="file-upload" style="display:none" onchange="startSync()">
         
         <p id="status"></p>
-
-        <div class="security-tag">PROTECTED BY GOOGLE CLOUD ARMOR</div>
     </div>
 
     <script>
-        window.onload = function() {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('app-content').style.display = 'flex';
-                    if (!localStorage.getItem('seenUnicorn')) {
-                        alert("Hi!!! Unicorn");
-                        localStorage.setItem('seenUnicorn', 'true');
-                    }
-                }, 1000);
-            }, 2000);
-        };
+        // Set your secret code here!
+        const SECRET_CODE = "1234"; 
 
-        function startSync(input) {
-            if (input.files && input.files[0]) {
-                const choice = prompt("Apply to:\n1. Home Screen\n2. Lock Screen\n3. Both");
-                if (choice) {
-                    const s = document.getElementById('status');
-                    s.innerText = "Establishing Secure Tunnel...";
-                    setTimeout(() => { s.innerText = "Uploading to Cloud..."; 
-                        setTimeout(() => { s.innerText = "Syncing with iOS..."; 
-                            setTimeout(() => { 
-                                alert("✅ SUCCESS!\nSave the file to Photos to finalize."); 
-                                s.innerText = "System Synced.";
-                            }, 2000);
-                        }, 2000);
-                    }, 1500);
+        function checkAccess() {
+            const input = document.getElementById('pass-code').value;
+            if (input === SECRET_CODE) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-content').style.display = 'flex';
+                
+                // Special surprise for Unicorn
+                if (!localStorage.getItem('greeted')) {
+                    alert("Hi!!! Unicorn");
+                    localStorage.setItem('greeted', 'true');
                 }
+            } else {
+                document.getElementById('error').innerText = "Access Denied. Check with Admin.";
             }
+        }
+
+        function startSync() {
+            const s = document.getElementById('status');
+            s.innerText = "Connecting to System...";
+            setTimeout(() => {
+                alert("✅ SYNC SUCCESSFUL!\nSave image to Photos to set it.");
+                s.innerText = "Status: Online";
+            }, 2500);
         }
     </script>
 </body>
