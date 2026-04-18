@@ -1,76 +1,39 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-void main() => runApp(CostamWallpapers());
-
-class CostamWallpapers extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(), // Stealth look
-      home: WallpaperHome(),
-    );
-  }
-}
-
-class WallpaperHome extends StatefulWidget {
-  @override
-  _WallpaperHomeState createState() => _WallpaperHomeState();
-}
-
-class _WallpaperHomeState extends State<WallpaperHome> {
-  @override
-  void initState() {
-    super.initState();
-    checkFirstSeen();
-  }
-
-  // THE "UNICORN" LOGIC: Checks if the app has opened before
-  Future checkFirstSeen() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _seen = (prefs.getBool('seen') ?? false);
-
-    if (!_seen) {
-      await prefs.setBool('seen', true);
-      _showUnicornGreeting();
-    }
-  }
-
-  void _showUnicornGreeting() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Welcome!"),
-        content: Text("Hi!!! Unicorn"), // The special one-time message
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("Hey!"))
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Costam Wallpapers")),
-      body: GridView.builder(
-        padding: EdgeInsets.all(10),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (context, index) {
-          return Card(
-            color: Colors.grey[900],
-            child: Center(child: Text("Wallpaper ${index + 1}")),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // Logic for sending the live wallpaper request
-          print("Request sent to server!");
-        },
-        label: Text("Request Live Wallpaper"),
-        icon: Icon(Icons.magic_wand_glow),
-      ),
-    );
-  }
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Costam Wallz</title>
+    <style>
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .icon { width: 100px; height: 100px; background: linear-gradient(45deg, #f09, #30f); border-radius: 22px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        h1 { font-size: 24px; margin: 0; }
+        p { color: #888; margin: 10px 0 30px; }
+        .btn { 
+            background: #fff; 
+            color: #000; 
+            padding: 15px 40px; 
+            border-radius: 30px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon"></div>
+    <h1>Costam Wallz</h1>
+    <p>Exclusive for Unicorn</p>
+    <a href="#" class="btn">Download Now</a>
+</body>
+</html>
