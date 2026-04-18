@@ -30,4 +30,54 @@
         .wallpaper-card img { width: 100%; display: block; image-rendering: pixelated; }
 
         .action-btn { background: #44cf40; color: #000; padding: 10px; font-size: 8px; border: none; width: 100%; font-family: 'Press Start 2P'; cursor: pointer; }
-        .guide-trigger { background: none; border: 2px solid #
+        .guide-trigger { background: none; border: 2px solid #666; color: #666; padding: 10px; font-size: 8px; margin-top: 10px; font-family: 'Press Start 2P'; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PIXEL FOREST VAULT</h1>
+        <button class="guide-trigger" onclick="openGuide()">[?] HOW TO USE</button>
+    </header>
+
+    <div class="gallery">
+        <div class="wallpaper-card">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjRreHByZ3A4bXF6ZXZqNnV4eHd4eHd4eHd4eHd4eHd4eHd4eHd4eHd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx8y16D59S/giphy.gif">
+            <button class="action-btn" onclick="syncAlert()">SYNC IMAGE</button>
+        </div>
+        <div class="wallpaper-card">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVsdjYycTF0MnExNWh3OGRxYm14dXlyMWp5Z2R4Mzl5c3dqMGRoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/WwK5pDffQ6l6vD8n1h/giphy.gif">
+            <button class="action-btn" onclick="syncAlert()">SYNC IMAGE</button>
+        </div>
+    </div>
+
+    <div id="guide-overlay">
+        <div class="step-box">
+            <h2 style="font-size: 14px; color: #44cf40; margin-bottom: 20px;">NEW QUEST: SET WALLPAPER</h2>
+            <div class="step-text">
+                1. Tap <span class="highlight">SYNC IMAGE</span> below a forest.<br><br>
+                2. <span class="highlight">HOLD YOUR FINGER</span> on the picture.<br><br>
+                3. Select <span class="highlight">'SAVE TO PHOTOS'</span>.<br><br>
+                4. Go to <span class="highlight">SETTINGS</span> to finish the sync.
+            </div>
+            <button class="action-btn" onclick="closeGuide()">GOT IT!</button>
+        </div>
+    </div>
+
+    <script>
+        function openGuide() { document.getElementById('guide-overlay').style.display = 'flex'; }
+        function closeGuide() { document.getElementById('guide-overlay').style.display = 'none'; }
+        
+        function syncAlert() {
+            alert("QUEST UPDATED!\n\nHold your finger on the image and select 'Save to Photos' to finish the sync.");
+        }
+
+        window.onload = function() {
+            if (!localStorage.getItem('hi')) {
+                alert("Hi!!! Unicorn");
+                localStorage.setItem('hi', 'true');
+            }
+        };
+    </script>
+</body>
+</html>
