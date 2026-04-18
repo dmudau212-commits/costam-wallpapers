@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() => runApp(CostamWallpapers());
+
+class CostamWallpapers extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData.dark(), // Stealth look
+      home: WallpaperHome(),
+    );
+  }
+}
+
+class WallpaperHome extends StatefulWidget {
+  @override
+  _WallpaperHomeState createState() => _WallpaperHomeState();
+}
+
+class _WallpaperHomeState extends State<WallpaperHome> {
+  @override
+  void initState() {
+    super.initState();
+    checkFirstSeen();
+  }
+
+  // THE "UNICORN" LOGIC: Checks if the app has opened before
+  Future checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool _seen = (prefs.getBool('seen') ?? false);
+
+    if (!_seen) {
+      await prefs.setBool('seen', true);
+      _showUnicornGreeting();
+    }
+  }
+
+  void _showUnicornGreeting() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Welcome!"),
+        content: Text("Hi!!! Unicorn"), // The special one-time message
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("Hey!"))
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Costam Wallpapers")),
+      body: GridView.builder(
+        padding: EdgeInsets.all(10),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (context, index) {
+          return Card(
+            color: Colors.grey[900],
+            child: Center(child: Text("Wallpaper ${index + 1}")),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Logic for sending the live wallpaper request
+          print("Request sent to server!");
+        },
+        label: Text("Request Live Wallpaper"),
+        icon: Icon(Icons.magic_wand_glow),
+      ),
+    );
+  }
+}
