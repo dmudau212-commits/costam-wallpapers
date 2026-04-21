@@ -15,11 +15,12 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Capacitor
+      - name: Initialize Environment
         run: |
+          # Create package.json and install only what we need
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          # Create a dummy package.json if it doesn't exist to prevent errors
+          # Initialize capacitor with a clean slate
           npx cap init "G-Fantasy" "com.gfantasy.app" --web-dir .
 
       - name: Set up JDK 17
@@ -28,9 +29,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Add Android Platform
+      - name: Add & Sync Android
         run: |
-          # We force the sync to ensure the web assets (index.html) are recognized
+          # If the folder exists, we clear it to avoid "Add Android Platform" errors
+          rm -rf android
           npx cap add android
           npx cap copy android
           npx cap sync android
@@ -44,5 +46,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: GFantasy-Release-APK
+          name: GFantasy-Titan-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
