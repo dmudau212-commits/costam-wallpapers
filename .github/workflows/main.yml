@@ -1,7 +1,7 @@
 name: Build Android APK
 on:
   push:
-    branches: [ main ] # Runs every time you commit to main
+    branches: [ main ]
 
 jobs:
   build:
@@ -15,10 +15,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Capacitor & Dependencies
+      - name: Install Capacitor
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
+          # Create a dummy package.json if it doesn't exist to prevent errors
           npx cap init "G-Fantasy" "com.gfantasy.app" --web-dir .
 
       - name: Set up JDK 17
@@ -28,7 +29,11 @@ jobs:
           distribution: 'temurin'
 
       - name: Add Android Platform
-        run: npx cap add android
+        run: |
+          # We force the sync to ensure the web assets (index.html) are recognized
+          npx cap add android
+          npx cap copy android
+          npx cap sync android
 
       - name: Build APK
         run: |
