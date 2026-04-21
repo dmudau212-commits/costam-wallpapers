@@ -1,5 +1,5 @@
 name: Build APK
-on: [push] # This triggers the build every time you save code
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
