@@ -5,134 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Pixel Vault</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>G-Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        :root { --main-color: #44cf40; --bg-color: #050505; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg-color); color: #fff; font-family: 'Press Start 2P', cursive; overflow: hidden; }
+        :root { --accent: #4285F4; --bg: #ffffff; --text: #202124; --card-bg: #f8f9fa; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; overflow: hidden; }
         
-        /* 1. LOADING SCREEN */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
+        /* 1. CLEAN LOADING SCREEN */
+        #loader {
+            position: fixed; inset: 0; background: #fff; z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+        .g-logo { font-size: 80px; font-weight: bold; font-family: 'Product Sans', sans-serif; }
+        .blue { color: #4285F4; } .red { color: #EA4335; } .yellow { color: #FBBC05; } .green { color: #34A853; }
 
-        /* 2. TOP NAV (Play Store Style) */
-        header { 
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 40px 15px 15px; background: #111; border-bottom: 1px solid #333;
+        /* 2. PLAY STORE SEARCH PILL */
+        header { padding: 50px 16px 10px; background: #fff; }
+        .search-pill {
+            background: #f1f3f4; border-radius: 28px; padding: 12px 18px;
+            display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .search-container {
-            background: #222; border-radius: 8px; padding: 8px 12px;
-            display: flex; align-items: center; width: 80%;
+        .search-pill input {
+            background: none; border: none; color: #3c4043; font-size: 16px; width: 100%; outline: none; margin-left: 10px;
         }
-        .search-input {
-            background: none; border: none; color: #fff; font-family: 'Press Start 2P';
-            font-size: 8px; width: 100%; outline: none;
-        }
-        .menu-dots { font-size: 20px; color: #999; cursor: pointer; padding-left: 10px; }
+        .dots-btn { font-size: 24px; color: #5f6368; margin-left: 10px; cursor: pointer; }
 
-        /* 3. SIDE MENU (Files & Downloads) */
-        #side-menu {
-            position: fixed; top: 0; right: -100%; width: 70%; height: 100%;
-            background: #111; border-left: 2px solid var(--main-color); z-index: 9000;
-            transition: 0.4s; padding: 60px 20px;
+        /* 3. APP CONTENT */
+        .page { height: calc(100% - 145px); overflow-y: auto; display: none; padding: 0 16px 80px; }
+        .page.active { display: block; }
+
+        .section-title { font-size: 18px; font-weight: 500; margin: 20px 0 10px; color: #202124; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #dadce0; }
+        .card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+        .card-info { padding: 10px; font-size: 12px; font-weight: 500; text-align: center; color: #5f6368; }
+
+        /* 4. SIDE DRAWER */
+        #side-drawer {
+            position: fixed; top: 0; right: -100%; width: 80%; height: 100%;
+            background: #fff; z-index: 10001; transition: 0.3s ease;
+            padding: 60px 0; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
         }
-        .menu-item { padding: 20px 0; border-bottom: 1px solid #222; font-size: 10px; color: var(--main-color); cursor: pointer; }
+        .drawer-item { padding: 18px 24px; font-size: 16px; color: #3c4043; display: flex; align-items: center; cursor: pointer; }
+        .drawer-item:active { background: #f1f3f4; }
 
-        /* 4. MAIN CONTENT AREA */
-        .page-container { height: calc(100% - 130px); overflow-y: scroll; padding-bottom: 80px; display: none; }
-        .active-page { display: block; }
+        /* 5. SETTINGS: KEYBOARD/THEME COLOR */
+        .color-row { display: flex; gap: 15px; margin-top: 15px; }
+        .dot { width: 45px; height: 45px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* 5. SETTINGS & KEYBOARD THEME */
-        .settings-box { padding: 20px; text-align: center; }
-        .color-picker { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .color-circle { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
-
-        /* 6. BOTTOM NAV (Play Store Style) */
-        nav.bottom-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
-            background: #111; border-top: 1px solid #333;
-            display: flex; justify-content: space-around; align-items: center; z-index: 8000;
+        /* 6. BOTTOM NAVIGATION */
+        nav {
+            position: fixed; bottom: 0; width: 100%; height: 75px;
+            background: #fff; border-top: 1px solid #dadce0;
+            display: flex; justify-content: space-around; align-items: center;
         }
-        .nav-item { text-align: center; font-size: 7px; color: #999; text-decoration: none; cursor: pointer; }
-        .nav-item.active { color: var(--main-color); }
-        .nav-item span { display: block; font-size: 20px; margin-bottom: 5px; }
+        .nav-link { text-align: center; font-size: 12px; color: #5f6368; text-decoration: none; display: flex; flex-direction: column; }
+        .nav-link.active { color: var(--accent); font-weight: 500; }
+        .nav-icon { font-size: 24px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <h1 style="font-size: 14px;">Hi!!! Unicorn 🦄</h1>
-        <p style="font-size: 8px; color: var(--main-color); margin-top: 20px;">READY TO SYNC...</p>
+    <div id="loader">
+        <div class="g-logo">
+            <span class="blue">G</span><span class="red">o</span><span class="yellow">o</span><span class="blue">g</span><span class="green">l</span><span class="red">e</span>
+        </div>
+        <p style="margin-top: 20px; color: #5f6368; font-size: 14px;">Updating Vault...</p>
     </div>
 
-    <div id="side-menu">
-        <div class="menu-item" onclick="toggleMenu()">✖ CLOSE</div>
-        <div class="menu-item">📁 FILES</div>
-        <div class="menu-item">📥 DOWNLOADS</div>
+    <div id="side-drawer">
+        <div class="drawer-item" onclick="toggleMenu()" style="color: #999;">✕ Close</div>
+        <div class="drawer-item">📂 My Files</div>
+        <div class="drawer-item">📥 Downloads</div>
+        <div class="drawer-item">⭐ Favorites</div>
     </div>
 
     <header>
-        <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="Search apps & games">
+        <div class="search-pill">
+            <span style="color: #5f6368;">🔍</span>
+            <input type="text" placeholder="Search apps & games">
         </div>
-        <div class="menu-dots" onclick="toggleMenu()">⋮</div>
+        <div class="dots-btn" onclick="toggleMenu()">⋮</div>
     </header>
 
-    <div id="home" class="page-container active-page">
-        <div style="padding: 20px; text-align: center; color: var(--main-color);">NEW QUESTS FOR YOU</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px;">
-             <div style="background:#222; height: 150px; border-radius: 10px;"></div>
-             <div style="background:#222; height: 150px; border-radius: 10px;"></div>
-        </div>
-    </div>
-
-    <div id="settings" class="page-container">
-        <div class="settings-box">
-            <h3>SETTINGS</h3>
-            <p style="font-size: 8px; margin-top: 20px;">KEYBOARD THEME COLOR</p>
-            <div class="color-picker">
-                <div class="color-circle" style="background: #44cf40;" onclick="changeTheme('#44cf40')"></div>
-                <div class="color-circle" style="background: #ff00ff;" onclick="changeTheme('#ff00ff')"></div>
-                <div class="color-circle" style="background: #00ffff;" onclick="changeTheme('#00ffff')"></div>
-                <div class="color-circle" style="background: #ffff00;" onclick="changeTheme('#ffff00')"></div>
+    <div id="home" class="page active">
+        <div class="section-title">Suggested for you</div>
+        <div class="grid">
+            <div class="card">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVsdjYycTF0MnExNWh3OGRxYm14dXlyMWp5Z2R4Mzl5c3dqMGRoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/WwK5pDffQ6l6vD8n1h/giphy.gif">
+                <div class="card-info">SYNC IMAGE</div>
+            </div>
+            <div class="card">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjRreHByZ3A4bXF6ZXZqNnV4eHd4eHd4eHd4eHd4eHd4eHd4eHd4eHd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx8y16D59S/giphy.gif">
+                <div class="card-info">SYNC IMAGE</div>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-bar">
-        <div class="nav-item active" onclick="showPage('home', this)"><span>🏠</span>Home</div>
-        <div class="nav-item"><span>🖼️</span>Wallpapers</div>
-        <div class="nav-item"><span>✨</span>Stickers</div>
-        <div class="nav-item" onclick="showPage('settings', this)"><span>⚙️</span>Settings</div>
+    <div id="settings" class="page">
+        <div class="section-title">App Theme</div>
+        <p style="font-size: 14px; color: #5f6368;">Change keyboard & highlight color</p>
+        <div class="color-row">
+            <div class="dot" style="background:#4285F4" onclick="setTheme('#4285F4')"></div>
+            <div class="dot" style="background:#34A853" onclick="setTheme('#34A853')"></div>
+            <div class="dot" style="background:#EA4335" onclick="setTheme('#EA4335')"></div>
+            <div class="dot" style="background:#FBBC05" onclick="setTheme('#FBBC05')"></div>
+            <div class="dot" style="background:#000000" onclick="setTheme('#000000')"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-link active" onclick="nav('home', this)">
+            <span class="nav-icon">🎮</span>Games
+        </div>
+        <div class="nav-link">
+            <span class="nav-icon">📱</span>Apps
+        </div>
+        <div class="nav-link" onclick="nav('settings', this)">
+            <span class="nav-icon">⚙️</span>Settings
+        </div>
     </nav>
 
     <script>
         function toggleMenu() {
-            const menu = document.getElementById('side-menu');
-            menu.style.right = menu.style.right === '0px' ? '-100%' : '0px';
+            const drawer = document.getElementById('side-drawer');
+            drawer.style.right = drawer.style.right === '0px' ? '-100%' : '0px';
         }
 
-        function showPage(pageId, element) {
-            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active-page');
-            element.classList.add('active');
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
         }
 
-        function changeTheme(color) {
-            document.documentElement.style.setProperty('--main-color', color);
-            document.getElementById('app-search').style.border = `1px solid ${color}`;
-            alert("Theme Updated!");
+        function setTheme(color) {
+            document.documentElement.style.setProperty('--accent', color);
+            alert("Keyboard theme color updated!");
         }
 
-        window.onload = function() {
-            setTimeout(() => {
-                document.getElementById('loading-screen').style.display = 'none';
-            }, 2500);
+        window.onload = () => {
+            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 2000);
         };
     </script>
 </body>
