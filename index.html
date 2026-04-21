@@ -50,4 +50,67 @@
 
         /* GALLERY (Scrollable area) */
         .content { height: calc(100% - 130px); overflow-y: scroll; padding-bottom: 80px; }
-        .gallery { display: grid; grid-template-
+        .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .wallpaper-card { background: #111; border: 2px solid #333; border-radius: 8px; overflow: hidden; }
+        .wallpaper-card img { width: 100%; display: block; }
+        .action-btn { background: #44cf40; color: #000; padding: 10px; font-size: 8px; border: none; width: 100%; font-family: 'Press Start 2P'; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="unicorn-logo">🦄</div>
+        <h1 id="loading-text" style="font-size: 14px;">Hi!!! Unicorn</h1>
+        <p style="font-size: 8px; color: #44cf40; margin-top: 20px;">LOADING VAULT...</p>
+    </div>
+
+    <div id="side-menu">
+        <div class="menu-item" onclick="toggleMenu()">✖ CLOSE</div>
+        <div class="menu-item">📁 FILES</div>
+        <div class="menu-item">📥 DOWNLOADS</div>
+        <div class="menu-item">⚙ SETTINGS</div>
+    </div>
+
+    <header>
+        <input type="text" class="search-box" placeholder="SEARCH...">
+        <div class="menu-dots" onclick="toggleMenu()">⋮</div>
+    </header>
+
+    <div class="content">
+        <div class="gallery">
+            <div class="wallpaper-card">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjRreHByZ3A4bXF6ZXZqNnV4eHd4eHd4eHd4eHd4eHd4eHd4eHd4eHd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9iZW5kZXImY3Q9Zw/3o7TKMGpxx8y16D59S/giphy.gif">
+                <button class="action-btn">SYNC</button>
+            </div>
+            <div class="wallpaper-card">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVsdjYycTF0MnExNWh3OGRxYm14dXlyMWp5Z2R4Mzl5c3dqMGRoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/WwK5pDffQ6l6vD8n1h/giphy.gif">
+                <button class="action-btn">SYNC</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-bar">
+        <a href="#" class="nav-item"><span>🏠</span>HOME</a>
+        <a href="#" class="nav-item"><span>🖼️</span>WALLPAPER</a>
+        <a href="#" class="nav-item"><span>✨</span>STICKERS</a>
+    </nav>
+
+    <script>
+        // Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('side-menu');
+            menu.style.left = menu.style.left === '0px' ? '-100%' : '0px';
+        }
+
+        // Loading Screen Logic
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 500);
+            }, 3000); // Shows loading for 3 seconds
+        };
+    </script>
+</body>
+</html>
