@@ -5,134 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>G-Vault</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>G-Fantasy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --accent: #4285F4; --bg: #ffffff; --text: #202124; --card-bg: #f8f9fa; }
+        :root { 
+            /* Main theme colors (using Femboy flag inspiration) */
+            --accent: #FF99CC; /* Pink from flag */
+            --sub-accent: #66CCFF; /* Blue from flag */
+            --bg: #ffffff; 
+            --text: #202124; 
+            --card-bg: #f8f9fa; 
+            --nav-text: #5f6368;
+        }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; overflow: hidden; }
         
-        /* 1. CLEAN LOADING SCREEN */
+        /* 1. LARGE G-LOGO LOADING SCREEN (Femboy Flag Gradient) */
         #loader {
             position: fixed; inset: 0; background: #fff; z-index: 10000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .g-logo { font-size: 80px; font-weight: bold; font-family: 'Product Sans', sans-serif; }
-        .blue { color: #4285F4; } .red { color: #EA4335; } .yellow { color: #FBBC05; } .green { color: #34A853; }
+        .large-g { 
+            font-size: 150px; 
+            font-weight: 700; 
+            font-family: 'Product Sans', sans-serif; /* or sans-serif fallback */
+            /* Vertical Femboy Flag Gradient */
+            background: linear-gradient(
+                180deg, 
+                #FF99CC 0%,   /* Pink top */
+                #66CCFF 33%,  /* Blue middle */
+                #FFFFFF 50%,  /* White center stripe */
+                #66CCFF 66%,  /* Blue middle */
+                #FF99CC 100%  /* Pink bottom */
+            );
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
 
-        /* 2. PLAY STORE SEARCH PILL */
+        /* 2. PLAY STORE SEARCH PILL (Cleaned Up) */
         header { padding: 50px 16px 10px; background: #fff; }
         .search-pill {
             background: #f1f3f4; border-radius: 28px; padding: 12px 18px;
             display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .search-pill input {
+        .search-input {
             background: none; border: none; color: #3c4043; font-size: 16px; width: 100%; outline: none; margin-left: 10px;
         }
         .dots-btn { font-size: 24px; color: #5f6368; margin-left: 10px; cursor: pointer; }
 
-        /* 3. APP CONTENT */
+        /* 3. APP CONTENT (Main "You" Page) */
         .page { height: calc(100% - 145px); overflow-y: auto; display: none; padding: 0 16px 80px; }
         .page.active { display: block; }
 
-        .section-title { font-size: 18px; font-weight: 500; margin: 20px 0 10px; color: #202124; }
+        /* Updated Title Text */
+        .section-title { font-size: 18px; font-weight: 500; margin: 25px 0 15px; color: #202124; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #dadce0; }
         .card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-        .card-info { padding: 10px; font-size: 12px; font-weight: 500; text-align: center; color: #5f6368; }
+        .card-info { padding: 10px; font-size: 12px; font-weight: 500; text-align: center; color: #5f6368; text-transform: uppercase; }
 
-        /* 4. SIDE DRAWER */
-        #side-drawer {
-            position: fixed; top: 0; right: -100%; width: 80%; height: 100%;
-            background: #fff; z-index: 10001; transition: 0.3s ease;
-            padding: 60px 0; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-        }
-        .drawer-item { padding: 18px 24px; font-size: 16px; color: #3c4043; display: flex; align-items: center; cursor: pointer; }
-        .drawer-item:active { background: #f1f3f4; }
+        /* 4. SETTINGS (Color Picker Update) */
+        .color-row { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .dot { width: 45px; height: 45px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
 
-        /* 5. SETTINGS: KEYBOARD/THEME COLOR */
-        .color-row { display: flex; gap: 15px; margin-top: 15px; }
-        .dot { width: 45px; height: 45px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-        /* 6. BOTTOM NAVIGATION */
+        /* 5. BOTTOM NAVIGATION (Updated "You" Tab) */
         nav {
             position: fixed; bottom: 0; width: 100%; height: 75px;
             background: #fff; border-top: 1px solid #dadce0;
             display: flex; justify-content: space-around; align-items: center;
         }
-        .nav-link { text-align: center; font-size: 12px; color: #5f6368; text-decoration: none; display: flex; flex-direction: column; }
+        .nav-link { text-align: center; font-size: 12px; color: var(--nav-text); text-decoration: none; display: flex; flex-direction: column; align-items: center; }
         .nav-link.active { color: var(--accent); font-weight: 500; }
-        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+        
+        /* Profile Icon style based on provided image */
+        .profile-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            /* Placeholder graphic that mimics the user icon in image_17.png */
+            border: 2px solid var(--nav-text);
+        }
+        .profile-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--nav-text);
+        }
+        .nav-link.active .profile-icon {
+            border-color: var(--accent);
+        }
+        .nav-link.active .profile-icon svg {
+            fill: var(--accent);
+        }
+        
+        .generic-icon { font-size: 24px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
     <div id="loader">
-        <div class="g-logo">
-            <span class="blue">G</span><span class="red">o</span><span class="yellow">o</span><span class="blue">g</span><span class="green">l</span><span class="red">e</span>
-        </div>
-        <p style="margin-top: 20px; color: #5f6368; font-size: 14px;">Updating Vault...</p>
-    </div>
-
-    <div id="side-drawer">
-        <div class="drawer-item" onclick="toggleMenu()" style="color: #999;">✕ Close</div>
-        <div class="drawer-item">📂 My Files</div>
-        <div class="drawer-item">📥 Downloads</div>
-        <div class="drawer-item">⭐ Favorites</div>
+        <div class="large-g">G</div>
     </div>
 
     <header>
         <div class="search-pill">
             <span style="color: #5f6368;">🔍</span>
-            <input type="text" placeholder="Search apps & games">
+            <input type="text" class="search-input" placeholder="Search the unknown...">
         </div>
-        <div class="dots-btn" onclick="toggleMenu()">⋮</div>
+        <div class="dots-btn" onclick="syncAlert()">⋮</div>
     </header>
 
     <div id="home" class="page active">
-        <div class="section-title">Suggested for you</div>
+        <div class="section-title">Fantasy awaits you</div>
         <div class="grid">
             <div class="card">
                 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVsdjYycTF0MnExNWh3OGRxYm14dXlyMWp5Z2R4Mzl5c3dqMGRoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/WwK5pDffQ6l6vD8n1h/giphy.gif">
-                <div class="card-info">SYNC IMAGE</div>
+                <div class="card-info" onclick="syncAlert()">SYNC QUEST</div>
             </div>
             <div class="card">
                 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjRreHByZ3A4bXF6ZXZqNnV4eHd4eHd4eHd4eHd4eHd4eHd4eHd4eHd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx8y16D59S/giphy.gif">
-                <div class="card-info">SYNC IMAGE</div>
+                <div class="card-info" onclick="syncAlert()">SYNC QUEST</div>
             </div>
         </div>
     </div>
 
     <div id="settings" class="page">
-        <div class="section-title">App Theme</div>
-        <p style="font-size: 14px; color: #5f6368;">Change keyboard & highlight color</p>
+        <div class="section-title">Customize Fantasy</div>
+        <p style="font-size: 14px; color: #5f6368;">Accent color (Themes keyboard & links)</p>
         <div class="color-row">
-            <div class="dot" style="background:#4285F4" onclick="setTheme('#4285F4')"></div>
-            <div class="dot" style="background:#34A853" onclick="setTheme('#34A853')"></div>
-            <div class="dot" style="background:#EA4335" onclick="setTheme('#EA4335')"></div>
-            <div class="dot" style="background:#FBBC05" onclick="setTheme('#FBBC05')"></div>
-            <div class="dot" style="background:#000000" onclick="setTheme('#000000')"></div>
-        </div>
+            <div class="dot" style="background:#FF99CC" onclick="setTheme('#FF99CC')"></div> <div class="dot" style="background:#66CCFF" onclick="setTheme('#66CCFF')"></div> <div class="dot" style="background:#34A853" onclick="setTheme('#34A853')"></div> <div class="dot" style="background:#EA4335" onclick="setTheme('#EA4335')"></div> <div class="dot" style="background:#000000" onclick="setTheme('#000000')"></div> </div>
     </div>
 
     <nav>
         <div class="nav-link active" onclick="nav('home', this)">
-            <span class="nav-icon">🎮</span>Games
+            <div class="profile-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+            You
         </div>
         <div class="nav-link">
-            <span class="nav-icon">📱</span>Apps
+            <span class="generic-icon">📱</span>Apps
         </div>
         <div class="nav-link" onclick="nav('settings', this)">
-            <span class="nav-icon">⚙️</span>Settings
+            <span class="generic-icon">⚙️</span>Settings
         </div>
     </nav>
 
     <script>
-        function toggleMenu() {
-            const drawer = document.getElementById('side-drawer');
-            drawer.style.right = drawer.style.right === '0px' ? '-100%' : '0px';
-        }
-
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -142,7 +165,11 @@
 
         function setTheme(color) {
             document.documentElement.style.setProperty('--accent', color);
-            alert("Keyboard theme color updated!");
+            alert("Fantasy theme updated!");
+        }
+        
+        function syncAlert() {
+            alert("QUEST UPDATED!\n\nHold your finger on the image and select 'Save to Photos' to finish the sync.");
         }
 
         window.onload = () => {
