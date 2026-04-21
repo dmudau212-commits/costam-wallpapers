@@ -3,141 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>G-Fantasy</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            /* Main theme colors (using Femboy flag inspiration) */
-            --accent: #FF99CC; /* Pink from flag */
-            --sub-accent: #66CCFF; /* Blue from flag */
-            --bg: #ffffff; 
-            --text: #202124; 
-            --card-bg: #f8f9fa; 
-            --nav-text: #5f6368;
+            --accent: #FF99CC; 
+            --sub-accent: #66CCFF; 
+            --bg: #121212; /* Default Dark Mode */
+            --text: #ffffff; 
+            --card-bg: #1e1e1e; 
+            --nav-bg: #181818;
+            --nav-text: #9aa0a6;
         }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; overflow: hidden; }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: var(--bg); color: var(--text); 
+            font-family: 'Roboto', sans-serif; overflow: hidden;
+            transition: background 0.4s ease; /* Makes background changes smooth */
+        }
         
-        /* 1. LARGE G-LOGO LOADING SCREEN (Femboy Flag Gradient) */
+        /* G-LOGO LOADING SCREEN */
         #loader {
-            position: fixed; inset: 0; background: #fff; z-index: 10000;
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .large-g { 
-            font-size: 150px; 
-            font-weight: 700; 
-            font-family: 'Product Sans', sans-serif; /* or sans-serif fallback */
-            /* Vertical Femboy Flag Gradient */
-            background: linear-gradient(
-                180deg, 
-                #FF99CC 0%,   /* Pink top */
-                #66CCFF 33%,  /* Blue middle */
-                #FFFFFF 50%,  /* White center stripe */
-                #66CCFF 66%,  /* Blue middle */
-                #FF99CC 100%  /* Pink bottom */
-            );
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
+            font-size: 150px; font-weight: 700;
+            background: linear-gradient(180deg, #FF99CC 0%, #66CCFF 50%, #FF99CC 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* 2. PLAY STORE SEARCH PILL (Cleaned Up) */
-        header { padding: 50px 16px 10px; background: #fff; }
+        /* SEARCH AREA */
+        header { padding: 50px 16px 10px; }
         .search-pill {
-            background: #f1f3f4; border-radius: 28px; padding: 12px 18px;
-            display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            background: var(--card-bg); border-radius: 28px; padding: 12px 18px;
+            display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1);
         }
         .search-input {
-            background: none; border: none; color: #3c4043; font-size: 16px; width: 100%; outline: none; margin-left: 10px;
+            background: none; border: none; color: #fff; font-size: 16px; width: 100%; outline: none; margin-left: 10px;
         }
-        .dots-btn { font-size: 24px; color: #5f6368; margin-left: 10px; cursor: pointer; }
 
-        /* 3. APP CONTENT (Main "You" Page) */
-        .page { height: calc(100% - 145px); overflow-y: auto; display: none; padding: 0 16px 80px; }
-        .page.active { display: block; }
+        /* PAGE ENGINE & SMOOTH TRANSITIONS */
+        .page { 
+            height: calc(100% - 145px); overflow-y: auto; 
+            padding: 0 16px 80px;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: none;
+        }
+        .page.active { 
+            display: block; opacity: 1; transform: translateY(0);
+        }
 
-        /* Updated Title Text */
-        .section-title { font-size: 18px; font-weight: 500; margin: 25px 0 15px; color: #202124; }
+        .section-title { font-size: 20px; font-weight: 500; margin: 25px 0 15px; }
+        
+        /* GRID LAYOUT */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #dadce0; }
-        .card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-        .card-info { padding: 10px; font-size: 12px; font-weight: 500; text-align: center; color: #5f6368; text-transform: uppercase; }
+        .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; transition: transform 0.2s; }
+        .card:active { transform: scale(0.95); }
+        .card img { width: 100%; aspect-ratio: 1; object-fit: cover; filter: brightness(0.8); }
+        .card-info { padding: 12px; font-size: 11px; text-align: center; letter-spacing: 1px; color: var(--accent); font-weight: bold; }
 
-        /* 4. SETTINGS (Color Picker Update) */
+        /* SETTINGS: THE COLOR ENGINE */
         .color-row { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
-        .dot { width: 45px; height: 45px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
+        .dot { 
+            width: 50px; height: 50px; border-radius: 50%; 
+            border: 3px solid rgba(255,255,255,0.2); cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .dot:active { transform: scale(1.2); }
 
-        /* 5. BOTTOM NAVIGATION (Updated "You" Tab) */
+        /* BOTTOM NAV */
         nav {
             position: fixed; bottom: 0; width: 100%; height: 75px;
-            background: #fff; border-top: 1px solid #dadce0;
+            background: var(--nav-bg); border-top: 1px solid rgba(255,255,255,0.05);
             display: flex; justify-content: space-around; align-items: center;
         }
-        .nav-link { text-align: center; font-size: 12px; color: var(--nav-text); text-decoration: none; display: flex; flex-direction: column; align-items: center; }
-        .nav-link.active { color: var(--accent); font-weight: 500; }
+        .nav-link { 
+            text-align: center; font-size: 12px; color: var(--nav-text); 
+            text-decoration: none; display: flex; flex-direction: column; align-items: center;
+            transition: color 0.3s;
+        }
+        .nav-link.active { color: var(--accent); }
         
-        /* Profile Icon style based on provided image */
         .profile-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 6px;
-            /* Placeholder graphic that mimics the user icon in image_17.png */
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 4px;
             border: 2px solid var(--nav-text);
         }
-        .profile-icon svg {
-            width: 16px;
-            height: 16px;
-            fill: var(--nav-text);
-        }
-        .nav-link.active .profile-icon {
-            border-color: var(--accent);
-        }
-        .nav-link.active .profile-icon svg {
-            fill: var(--accent);
-        }
-        
-        .generic-icon { font-size: 24px; margin-bottom: 4px; }
+        .nav-link.active .profile-icon { border-color: var(--accent); }
+        .profile-icon svg { width: 16px; height: 16px; fill: var(--nav-text); }
+        .nav-link.active .profile-icon svg { fill: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="large-g">G</div>
-    </div>
+    <div id="loader"><div class="large-g">G</div></div>
 
     <header>
         <div class="search-pill">
-            <span style="color: #5f6368;">🔍</span>
+            <span>🔍</span>
             <input type="text" class="search-input" placeholder="Search the unknown...">
         </div>
-        <div class="dots-btn" onclick="syncAlert()">⋮</div>
     </header>
 
     <div id="home" class="page active">
         <div class="section-title">Fantasy awaits you</div>
         <div class="grid">
-            <div class="card">
+            <div class="card" onclick="questAlert()">
                 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVsdjYycTF0MnExNWh3OGRxYm14dXlyMWp5Z2R4Mzl5c3dqMGRoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/WwK5pDffQ6l6vD8n1h/giphy.gif">
-                <div class="card-info" onclick="syncAlert()">SYNC QUEST</div>
+                <div class="card-info">SYNC QUEST</div>
             </div>
-            <div class="card">
+            <div class="card" onclick="questAlert()">
                 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjRreHByZ3A4bXF6ZXZqNnV4eHd4eHd4eHd4eHd4eHd4eHd4eHd4eHd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx8y16D59S/giphy.gif">
-                <div class="card-info" onclick="syncAlert()">SYNC QUEST</div>
+                <div class="card-info">SYNC QUEST</div>
             </div>
         </div>
     </div>
 
     <div id="settings" class="page">
-        <div class="section-title">Customize Fantasy</div>
-        <p style="font-size: 14px; color: #5f6368;">Accent color (Themes keyboard & links)</p>
+        <div class="section-title">App Appearance</div>
+        <p style="font-size: 14px; color: var(--nav-text);">Select a background color:</p>
         <div class="color-row">
-            <div class="dot" style="background:#FF99CC" onclick="setTheme('#FF99CC')"></div> <div class="dot" style="background:#66CCFF" onclick="setTheme('#66CCFF')"></div> <div class="dot" style="background:#34A853" onclick="setTheme('#34A853')"></div> <div class="dot" style="background:#EA4335" onclick="setTheme('#EA4335')"></div> <div class="dot" style="background:#000000" onclick="setTheme('#000000')"></div> </div>
+            <div class="dot" style="background:#FF99CC" onclick="changeAppColor('#FF99CC', '#fff')"></div>
+            <div class="dot" style="background:#66CCFF" onclick="changeAppColor('#66CCFF', '#fff')"></div>
+            <div class="dot" style="background:#121212" onclick="changeAppColor('#121212', '#fff')"></div>
+            <div class="dot" style="background:#ffffff" onclick="changeAppColor('#ffffff', '#202124')"></div>
+            <div class="dot" style="background:#2D0E44" onclick="changeAppColor('#2D0E44', '#fff')"></div>
+        </div>
     </div>
 
     <nav>
@@ -147,33 +142,52 @@
             </div>
             You
         </div>
-        <div class="nav-link">
-            <span class="generic-icon">📱</span>Apps
+        <div class="nav-link" onclick="questAlert()">
+            <span style="font-size:24px">📱</span>Apps
         </div>
         <div class="nav-link" onclick="nav('settings', this)">
-            <span class="generic-icon">⚙️</span>Settings
+            <span style="font-size:24px">⚙️</span>Settings
         </div>
     </nav>
 
     <script>
         function nav(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
+            const pages = document.querySelectorAll('.page');
+            const links = document.querySelectorAll('.nav-link');
+            
+            pages.forEach(p => p.classList.remove('active'));
+            links.forEach(l => l.classList.remove('active'));
+            
+            setTimeout(() => {
+                document.getElementById(id).classList.add('active');
+                el.classList.add('active');
+            }, 50);
         }
 
-        function setTheme(color) {
-            document.documentElement.style.setProperty('--accent', color);
-            alert("Fantasy theme updated!");
+        function changeAppColor(bgColor, textColor) {
+            document.documentElement.style.setProperty('--bg', bgColor);
+            document.documentElement.style.setProperty('--text', textColor);
+            // Auto-adjust cards and nav for visibility
+            if(bgColor === '#ffffff') {
+                document.documentElement.style.setProperty('--card-bg', '#f1f3f4');
+                document.documentElement.style.setProperty('--nav-bg', '#ffffff');
+                document.documentElement.style.setProperty('--nav-text', '#5f6368');
+            } else {
+                document.documentElement.style.setProperty('--card-bg', 'rgba(255,255,255,0.05)');
+                document.documentElement.style.setProperty('--nav-bg', 'rgba(0,0,0,0.2)');
+                document.documentElement.style.setProperty('--nav-text', '#9aa0a6');
+            }
         }
         
-        function syncAlert() {
-            alert("QUEST UPDATED!\n\nHold your finger on the image and select 'Save to Photos' to finish the sync.");
+        function questAlert() {
+            alert("Quest Sync in Progress...");
         }
 
         window.onload = () => {
-            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 2000);
+            setTimeout(() => { 
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1500);
         };
     </script>
 </body>
