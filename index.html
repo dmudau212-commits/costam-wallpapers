@@ -9,75 +9,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505; color: #fff; font-family: 'Press Start 2P', cursive; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505; color: #fff; font-family: 'Press Start 2P', cursive; overflow: hidden; }
         
-        /* THEMED HEADER */
-        header { padding: 40px 20px 20px; text-align: center; background: linear-gradient(to bottom, #1a2e1a, #050505); border-bottom: 2px solid #44cf40; }
-        h1 { font-size: 12px; color: #44cf40; margin-bottom: 10px; }
-
-        /* TUTORIAL OVERLAY */
-        #guide-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 5000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center;
+        /* 1. LOADING SCREEN */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 10000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
         }
-        .step-box { background: #111; border: 3px solid #44cf40; padding: 20px; border-radius: 10px; width: 90%; }
-        .step-text { font-size: 10px; line-height: 1.8; color: #fff; margin-bottom: 20px; }
-        .highlight { color: #44cf40; text-decoration: underline; }
+        .unicorn-logo { font-size: 50px; margin-bottom: 20px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* GALLERY GRID */
-        .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .wallpaper-card { background: #111; border: 2px solid #333; border-radius: 8px; overflow: hidden; }
-        .wallpaper-card img { width: 100%; display: block; image-rendering: pixelated; }
-
-        .action-btn { background: #44cf40; color: #000; padding: 10px; font-size: 8px; border: none; width: 100%; font-family: 'Press Start 2P'; cursor: pointer; }
-        .guide-trigger { background: none; border: 2px solid #666; color: #666; padding: 10px; font-size: 8px; margin-top: 10px; font-family: 'Press Start 2P'; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>PIXEL FOREST VAULT</h1>
-        <button class="guide-trigger" onclick="openGuide()">[?] HOW TO USE</button>
-    </header>
-
-    <div class="gallery">
-        <div class="wallpaper-card">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjRreHByZ3A4bXF6ZXZqNnV4eHd4eHd4eHd4eHd4eHd4eHd4eHd4eHd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx8y16D59S/giphy.gif">
-            <button class="action-btn" onclick="syncAlert()">SYNC IMAGE</button>
-        </div>
-        <div class="wallpaper-card">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVsdjYycTF0MnExNWh3OGRxYm14dXlyMWp5Z2R4Mzl5c3dqMGRoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/WwK5pDffQ6l6vD8n1h/giphy.gif">
-            <button class="action-btn" onclick="syncAlert()">SYNC IMAGE</button>
-        </div>
-    </div>
-
-    <div id="guide-overlay">
-        <div class="step-box">
-            <h2 style="font-size: 14px; color: #44cf40; margin-bottom: 20px;">NEW QUEST: SET WALLPAPER</h2>
-            <div class="step-text">
-                1. Tap <span class="highlight">SYNC IMAGE</span> below a forest.<br><br>
-                2. <span class="highlight">HOLD YOUR FINGER</span> on the picture.<br><br>
-                3. Select <span class="highlight">'SAVE TO PHOTOS'</span>.<br><br>
-                4. Go to <span class="highlight">SETTINGS</span> to finish the sync.
-            </div>
-            <button class="action-btn" onclick="closeGuide()">GOT IT!</button>
-        </div>
-    </div>
-
-    <script>
-        function openGuide() { document.getElementById('guide-overlay').style.display = 'flex'; }
-        function closeGuide() { document.getElementById('guide-overlay').style.display = 'none'; }
-        
-        function syncAlert() {
-            alert("QUEST UPDATED!\n\nHold your finger on the image and select 'Save to Photos' to finish the sync.");
+        /* 2. TOP NAV (Search & Dots) */
+        header { 
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 40px 15px 15px; background: #1a2e1a; border-bottom: 2px solid #44cf40;
         }
+        .search-box {
+            background: #111; border: 1px solid #44cf40; padding: 8px;
+            color: #44cf40; font-family: 'Press Start 2P'; font-size: 8px; width: 60%;
+        }
+        .menu-dots { font-size: 20px; cursor: pointer; color: #44cf40; }
 
-        window.onload = function() {
-            if (!localStorage.getItem('hi')) {
-                alert("Hi!!! Unicorn");
-                localStorage.setItem('hi', 'true');
-            }
-        };
-    </script>
-</body>
-</html>
+        /* 3. SIDE MENU */
+        #side-menu {
+            position: fixed; top: 0; left: -100%; width: 70%; height: 100%;
+            background: #111; border-right: 3px solid #44cf40; z-index: 9000;
+            transition: 0.3s; padding: 50px 20px;
+        }
+        .menu-item { padding: 15px 0; border-bottom: 1px solid #333; font-size: 10px; color: #44cf40; list-style: none; }
+
+        /* 4. BOTTOM NAV */
+        nav.bottom-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+            background: #111; border-top: 2px solid #44cf40;
+            display: flex; justify-content: space-around; align-items: center; z-index: 8000;
+        }
+        .nav-item { text-align: center; font-size: 7px; color: #fff; text-decoration: none; }
+        .nav-item span { display: block; font-size: 18px; margin-bottom: 5px; }
+
+        /* GALLERY (Scrollable area) */
+        .content { height: calc(100% - 130px); overflow-y: scroll; padding-bottom: 80px; }
+        .gallery { display: grid; grid-template-
